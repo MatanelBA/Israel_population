@@ -71,9 +71,16 @@ population_2000_2010_2020_int <- population_2000_2020_int %>%
 filter( population_group %in% c("arab_total", "jews_and_others_total"), year %in%c(2000, 2010,2020) )    
 
 population_2000_2010_2020_int %>%
-  ggplot(aes(age,prc_of_group,  color = year)) +
-  geom_line() +
-  facet_wrap(~population_group ) 
+  ggplot(aes(age,prc_of_group , fill = population_group)) +
+  geom_line(color = "black") +
+  geom_area()+
+  facet_grid(year~population_group ) +
+  geom_vline(data = filter(population_2000_2020_sum, population_group %in% c("arab_total", "jews_and_others_total"), year  %in%c(2000, 2010,2020)), aes( xintercept = median), color = "white",  size = 0.5) +
+   geom_text(data = filter(population_2000_2020_sum, population_group %in% c("arab_total", "jews_and_others_total"), year  %in%c(2000, 2010,2020)), aes( x = median,y = 0.01, label = round(median) ), color = "white", nudge_x = 5) +
+  theme_bw()+
+    scale_fill_manual(values = c("#4DAF4A", "#377EB8" ))+
+     theme(panel.grid.minor = element_blank())  +
+     scale_y_continuous(n.breaks = , labels = label_percent(accuracy = 1))  
 ```
 
 זה לא כל כך נוח לקריאה כי הקווים עושים רושם של ספגטי
@@ -107,18 +114,15 @@ geom_col() +
 
 ```{r}
 
-quantiles <- population_2000_2010_2020_age_groups %>%
-  filter( population_group == "arab_total") %>%
-  group_by(year) %>%
-  summarize(avg =
 
-population_2000_2010_2020_age_groups %>%
+
+population_2000_2010_2020_int %>%
   filter( population_group == "arab_total") %>%
   ggplot(aes(age,year, height = prc_of_group, fill = year, group = year)) +
  # geom_density_ridges (aes( height = prc_of_group), stat = "identity" , scale = 1)
   geom_ridgeline(scale = 15)+
-    scale_y_discrete(expand = c(0.05, 0)) +
-  # geom_vline()+
+    scale_y_discrete(expand = c(0.05, 0)) 
+ #  geom_vline(data = filter(population_2000_2020_sum, population_group == "arab_total", year  %in%c(2000, 2010,2020)), aes( xintercept = median), color = "black",  size = 1) נראה שזה לא יכול לעבוד עם גרף קווי מפה. 
 
 #stat_density_ridges(aes( height = prc_of_group) , scale = 1, quantile_lines = TRUE, quantiles = 2)
 ```
