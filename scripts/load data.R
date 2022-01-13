@@ -28,7 +28,8 @@ population_2000_2020   <-   map_dfr(files_list, read_excel,sheet = 1, col_names 
                              , values_to = "number")           %>% 
                 mutate(number = as.double(number)*1000) %>%
                 filter(!is.na(number)) %>%
-                arrange(year, age)
+                select (year,population_group, age, number) %>%
+                arrange(year,population_group, age)
 
 #write.xlsx(population_2000_2020, "products/population_2000_2020.xlsx",asTable = T)
 
@@ -51,8 +52,6 @@ OECD_pop <- map_dfr(files_list, read_csv , .id = "data_type") %>%
            arrange(country, year, gender, age_group)
 
 #write.xlsx(OECD_pop, "products/OECD_pop.xlsx",asTable = T)
-
-
 
 
 
