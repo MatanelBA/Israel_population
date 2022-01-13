@@ -1,0 +1,20 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+שינוי בהרכב הגילאים בישראל במהלך שנות האלפיים
+
+```{r}
+
+library(pacman)
+p_load(tidyverse, openxlsx, readxl, utf8, ggplot2, scales, magrittr)
+p_load(ggplot2, ggridges, ggpubr, scales, cowplot,viridisLite, viridis, RColorBrewer,ggsci,ggthemes,patchwork,scales )
+
+
+getwd()
+
+```
+
+
+דבר ראשון, צריך להפריד בין יהודים לערבים.
+היה טוב אם הייתי יכול להפריד גם בין עולים מרוסיה לבין שאר האוכלוסייה, אבל זה קשה לביצוע במסגרת הדאטה שלי

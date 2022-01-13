@@ -9,6 +9,8 @@ getwd()
 
 
 #1. load Israel data 
+#to update this in years to come: add the new file to the folder, check if it's structure is the same, and replace the max year number everywhere in the script.  
+
 
 var_names <- c("age", "arab_female", "arab_male", "arab_total",
                "jews_and_others_female","jews_and_others_male", "jews_and_others_total", 
