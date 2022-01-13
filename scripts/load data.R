@@ -1,7 +1,7 @@
 
 
 library(pacman)
-p_load(tidyverse, openxlsx, readxl, utf8, ggplot2, scales, magrittr)
+p_load(tidyverse, openxlsx, readxl, utf8, ggplot2, scales, magrittr,matrixStats, reldist, DescTools )
 
 rm(list = objects())
 

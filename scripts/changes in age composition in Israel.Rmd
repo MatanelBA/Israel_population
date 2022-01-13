@@ -25,7 +25,7 @@ getwd()
 p_population_grouop_num <- population_2000_2020_int %>%
 filter( population_group %in% c("arab_total", "jews_and_others_total"), year == 2020  ) %>%
 ggplot(aes(age, number, color = population_group)) +
-         geom_path(size = 2)+
+         geom_path()+
   theme_bw() +
 #    scale_color_brewer(type = "qual" ,palette = "Set1")+
   scale_colour_manual(values = c("#4DAF4A", "#377EB8" ))+ #השתמשתי בהגדרה ידנית מתוך הפלטה כדי שהצבעים יתאימו אינטואיטיבית כחול יהודים וירוק ערבים. היה טוב אם הייתה דרך לדלג על צבע בפלטה אבל לא מצאתי כזאת ולכן הגדרתי ידנית
@@ -36,11 +36,11 @@ scale_x_continuous(n.breaks = 8)
 p_population_grouop_prc <- population_2000_2020_int %>%
 filter( population_group %in% c("arab_total", "jews_and_others_total"), year == 2020  ) %>%
 ggplot(aes(age, prc_of_group, color = population_group)) +
-         geom_path(size = 1)+
+         geom_path()+
   theme_bw() +
   scale_colour_manual(values = c("#4DAF4A", "#377EB8" ))+
   theme(panel.grid.minor = element_blank())  +
-  scale_y_continuous(n.breaks = 8, labels = label_comma())  + 
+  scale_y_continuous(n.breaks = 8, label = label_percent())  + 
 scale_x_continuous(n.breaks = 8) 
 
 p_population_grouop_area <- population_2000_2020_int %>%
@@ -53,7 +53,7 @@ p_population_grouop_area <- population_2000_2020_int %>%
      theme_bw() +
      scale_fill_manual(values = c("#4DAF4A", "#377EB8" ))+
      theme(panel.grid.minor = element_blank())  +
-     scale_y_continuous(n.breaks = 8, labels = label_comma())  + 
+     scale_y_continuous(n.breaks = 8, labels = label_percent())  + 
      scale_x_continuous(n.breaks = 8) 
 
 #plot_grid(p_population_grouop_num,p_population_grouop_prc)
@@ -62,4 +62,72 @@ p_population_grouop_prc
 p_population_grouop_area
 
 
+```
+
+כל זה היה רק בשביל להראות את החשיבות של החלוקה בין האוכלוסייה היהודית לבין האוכלוסייה הערבית. עכשיו נשווה בין תחילת וסוף כל עשור: 2000, 2010, 2020
+
+```{r}
+population_2000_2010_2020_int <- population_2000_2020_int %>%
+filter( population_group %in% c("arab_total", "jews_and_others_total"), year %in%c(2000, 2010,2020) )    
+
+population_2000_2010_2020_int %>%
+  ggplot(aes(age,prc_of_group,  color = year)) +
+  geom_line() +
+  facet_wrap(~population_group ) 
+```
+
+זה לא כל כך נוח לקריאה כי הקווים עושים רושם של ספגטי
+
+ננסה לעשות את אותו הדבר עם קבוצות גיל
+
+```{r}
+population_2000_2010_2020_age_groups <- population_2000_2020_age_groups %>%
+filter( population_group %in% c("arab_total", "jews_and_others_total"), year %in%c(2000, 2010,2020), !(age  %in% c("TOTAL", "90+", "95+", "90-94") )    )
+
+population_2000_2010_2020_age_groups %>%
+  filter( population_group == "jews_and_others_total") %>%
+  ggplot(aes(age,prc_of_group, group = year, fill = year)) +
+  facet_grid(year~.)+
+geom_col() +
+  coord_flip()
+
+population_2000_2010_2020_age_groups %>%
+  filter( population_group == "arab_total") %>%
+  ggplot(aes(age,prc_of_group, group = year, fill = year)) +
+  facet_grid(year~.)+
+geom_col() +
+  coord_flip()
+
+
+```
+
+ההבדלים לא מספיק ברורים לעין.
+
+אפשר אולי להשתמש ב-ridgplot
+
+```{r}
+
+quantiles <- population_2000_2010_2020_age_groups %>%
+  filter( population_group == "arab_total") %>%
+  group_by(year) %>%
+  summarize(avg =
+
+population_2000_2010_2020_age_groups %>%
+  filter( population_group == "arab_total") %>%
+  ggplot(aes(age,year, height = prc_of_group, fill = year, group = year)) +
+ # geom_density_ridges (aes( height = prc_of_group), stat = "identity" , scale = 1)
+  geom_ridgeline(scale = 15)+
+    scale_y_discrete(expand = c(0.05, 0)) +
+  # geom_vline()+
+
+#stat_density_ridges(aes( height = prc_of_group) , scale = 1, quantile_lines = TRUE, quantiles = 2)
+```
+
+נראה לי שההבדל בין השנים פשוט לא מספיק גדול בשביל לראות אותו בין התפלגויות שלמות. נראה לי שהפתרון הוא פשוט לחשב הפרשים.
+
+בשביל זה צריך להעביר קודם
+
+```{r}
+population_2000_2010_2020_age_groups %>%
+  mutate(dif_2000_2010 = )
 ```
