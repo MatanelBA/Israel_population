@@ -5,6 +5,7 @@
 
 OECD_pop <- OECD_pop %>%
   group_by(data_type, year, country, gender) %>%
+  filter(age_group != "total" ) %>%
   summarize(age_group = age_group, 
             number = number,
             prc_of_group = number/ sum(number) )%>%
