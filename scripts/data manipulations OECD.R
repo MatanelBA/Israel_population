@@ -1,10 +1,24 @@
 #glimpse(OECD_pop)
 
+# הוספת מידע
+EU_countries <-tolower(c("Austria" ,"Belgium", "Bulgaria", "Croatia", "Cyprus",  
+                        "Czech Republic" ,"Denmark" ,"Estonia" ,"Finland" ,"France" ,
+                        "Germany" ,"Greece" ,"Hungary" ,"Ireland" ,"Italy" ,"Latvia" ,
+                        "Lithuania" ,"Luxembourg" ,"Malta" ,"The Netherlands" ,"Poland" ,
+                        "Portugal" ,"Romania" ,"Slovakia" ,"Slovenia" ,"Spain" ,"Sweden"))
+
+
+OECD_pop <- OECD_pop %>%
+  mutate(
+        is_EU =       if_else (country %in%   EU_countries, 1,0), 
+        is_european = if_else (country %in% c(EU_countries, "switzerland", "united kingdom",  "norway"),1,0 )
+        )
+
 
 #הוספת אחוזים
 
 OECD_pop <- OECD_pop %>%
-  group_by(data_type, year, country, gender) %>%
+  group_by(data_type, year, country, gender,,is_EU, is_european) %>%
   filter(age_group != "total" ) %>%
   summarize(age_group = age_group, 
             number = number,
@@ -37,7 +51,7 @@ OECD_pop_sum <- OECD_pop %>%
                              age_group == "85_over"  ~  89     
                              )  ) %>%
   arrange(year, country, gender , age_avg) %>%
-  group_by(year, country, gender) %>%
+  group_by(year, country, gender, is_EU, is_european) %>%
   summarize(
             total = sum(number),
             life_years = sum(number*age_avg),
