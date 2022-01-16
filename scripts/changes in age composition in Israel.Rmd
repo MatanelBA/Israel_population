@@ -76,7 +76,7 @@ population_2000_2010_2020_int %>%
   geom_area()+
   facet_grid(year~population_group ) +
   geom_vline(data = filter(population_2000_2020_sum, population_group %in% c("arab_total", "jews_and_others_total"), year  %in%c(2000, 2010,2020)), aes( xintercept = median), color = "white",  size = 0.5) +
-   geom_text(data = filter(population_2000_2020_sum, population_group %in% c("arab_total", "jews_and_others_total"), year  %in%c(2000, 2010,2020)), aes( x = median,y = 0.01, label = round(median) ), color = "white", nudge_x = 5) +
+   geom_text(data = filter(population_2000_2020_sum, population_group %in% c("arab_total", "jews_and_others_total"), year  %in%c(2000, 2010,2020)), aes( x = median,y = 0.005, label = round(median) ), color = "white", nudge_x = 5) +
   theme_bw()+
     scale_fill_manual(values = c("#4DAF4A", "#377EB8" ))+
      theme(panel.grid.minor = element_blank())  +
