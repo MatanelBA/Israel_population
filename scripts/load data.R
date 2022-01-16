@@ -44,11 +44,15 @@ files_list <- setNames(c("originals/OECD population/HIST_POP_18062021.csv",
                        c("history","projection"))
 
 OECD_pop <- map_dfr(files_list, read_csv , .id = "data_type") %>%
-           select(country = Country, age_group = AGE, gender = Sex, year = Time, number =  Value, data_type ) %>%
+           select( data_type, year = Time, country = Country, gender = Sex, age_group = AGE, number =  Value ) %>%
            filter(str_length(.$age_group)<6 | age_group =="85_OVER",
-                  age_group != "20-64" ) %>%
-           mutate(age_group = ordered(tolower(age_group)),
-                  gender    =         tolower(gender)  ) %>%
+                  age_group != "20-64",
+                  age_group != "15-64") %>%
+           mutate(
+                  age_group = ordered(tolower(age_group)),
+                  gender    = factor (tolower(gender)   ),  
+                  country    = factor (tolower(country) )   
+                      ) %>%
            arrange(country, year, gender, age_group)
 
 #write.xlsx(OECD_pop, "products/OECD_pop.xlsx",asTable = T)

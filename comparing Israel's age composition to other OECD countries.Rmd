@@ -1,0 +1,28 @@
+---
+title: "comparing Israel's age composition to other OECD countries"
+output: html_notebook
+---
+
+
+
+```{r setup}
+library(pacman)
+p_load(tidyverse, openxlsx, readxl, utf8, ggplot2, scales, magrittr)
+p_load(ggplot2, ggridges, ggpubr, scales, cowplot,viridisLite, viridis, RColorBrewer,ggsci,ggthemes,patchwork,scales )
+
+
+getwd()
+
+```
+
+הדגמה של ההבדל בין אוכלוסיית ישראל לבין הממוצע ב-OECD
+
+
+
+```{r}
+
+
+
+```
+
+הדגמה של חשיבות ההשוואה לפי גיל
