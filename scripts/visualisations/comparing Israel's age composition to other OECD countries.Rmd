@@ -1,0 +1,137 @@
+---
+title: "comparing Israel's age composition to other OECD countries"
+output: html_notebook
+---
+
+
+
+```{r setup}
+library(pacman)
+p_load(tidyverse, openxlsx, readxl, utf8, ggplot2, scales, magrittr)
+p_load(ggplot2, ggridges, ggpubr, scales, cowplot,viridisLite, viridis, RColorBrewer,ggsci,ggthemes,patchwork,scales )
+
+
+getwd()
+
+```
+
+הדגמה של ההבדל בין אוכלוסיית ישראל לבין הממוצע ב-OECD
+
+```{r}
+
+comper_israel_eu <- OECD_pop %>%
+  filter(country %in% c("israel", "european union (28 countries)" ),
+         gender    == "total",
+         data_type == "history"
+         ) %>% ungroup()
+  
+comper_israel_eu_sum <- OECD_pop_sum %>%
+  filter(country %in% c("israel", "european union (28 countries)" ),
+         gender    == "total"
+         ) %>% ungroup()
+
+p_comper_israel_eu <- comper_israel_eu %>%
+  filter(year == 2018) %>%
+  ggplot(aes(age_group, prc_of_group, color = country, group = country)) +
+ geom_line() +
+  theme_bw()+
+    scale_color_manual(values = c("#4DAF4A", "#377EB8" ))+
+     theme(panel.grid.minor = element_blank())  +
+     scale_y_continuous(limits = c(0, 0.1), n.breaks = , labels = label_percent(accuracy = 1))
+
+
+p_comper_israel_eu
+```
+גרסה יותר יפה ומסוגננת שמתאימה להצגה וגם כוללת התייחסות לחציון ואולי לרבעונים
+(לא גמור)
+
+```{r}
+
+comper_israel_eu <- OECD_pop %>%
+  filter(country %in% c("israel", "european union (28 countries)" ),
+         gender    == "total",
+         data_type == "history"
+         ) %>% ungroup()
+  
+comper_israel_eu_sum <- OECD_pop_sum %>%
+  filter(country %in% c("israel", "european union (28 countries)" ),
+         gender    == "total"
+         ) %>% ungroup()
+
+p_comper_israel_eu <- comper_israel_eu %>%
+  filter(year == 2018) %>%
+  ggplot(aes(age_group, prc_of_group, fill = country, group = country)) +
+#geom_line(color = "black") +
+  geom_area()+
+  facet_grid(country~. ) +
+  theme_bw()+
+    scale_fill_manual(values = c("#4DAF4A", "#377EB8" ))+
+     theme(panel.grid.minor = element_blank())  +
+     scale_y_continuous(n.breaks = , labels = label_percent(accuracy = 1)) 
+
+p_comper_israel_eu_median <-   comper_israel_eu_sum %>% 
+  filter (year == 2018) %>%
+  ggplot(aes(fill = country, group = country)) +
+  geom_vline ( aes( xintercept = median), color = "white",  size = 0.5) +
+  facet_grid(country~. ) +
+   theme_bw()+
+ geom_text  ( aes( x = median,y = 0.01, label = round(median) ), color = "white", nudge_x = 5) +
+  scale_y_continuous(limits = c(0,0.5) , n.breaks = , labels = label_percent(accuracy = 1))+
+  scale_x_continuous(limits = c(0,90)  , n.breaks =  )+
+   theme_void() 
+
+ggdraw(p_comper_israel_eu ) +
+  draw_plot(p_comper_israel_eu_median)
+
+```
+
+הצגה של מדדים מרכזיים - כל המדינות בשנת 2018
+```{r}
+comper_israel_eu_sum <- OECD_pop_sum %>%
+  filter(year == 2018 ,
+         gender    == "total",
+         is_european == 1 | country == "israel"
+         ) %>% 
+  ggplot(aes(fct_reorder(country, median), median)) +
+  geom_col(aes(fill = if_else(country == "israel", T, F))) +
+  geom_text(aes(label = round(median)), nudge_y = 1) +
+  coord_flip()+
+  scale_fill_manual(values = c("grey50", "#377EB8"), guide = "none")+
+  labs(title = "גיל חציוני בשנת 2018, ישראל ומדינות אירופה", 
+       caption = "מקור הנתונים: OECD STAT",
+       x = "",
+       y = ""
+       )
+
+
+comper_israel_eu_sum
+```
+
+הצגה של התפלגויות כל המדינות
+
+
+
+
+```{r}
+
+
+
+ OECD_pop %>%
+  filter( gender    == "total",
+         data_type == "history",
+         year == 2018
+         ) %>% ungroup() %>%
+  ggplot(aes(age_group, y = country)) +
+ geom_ridgeline(aes(height  = prc_of_group)) +
+  theme_bw()+
+    scale_fill_manual(values = c("#4DAF4A", "#377EB8" ))+
+     theme(panel.grid.minor = element_blank()) 
+
++
+     scale_y_continuous(n.breaks = , labels = label_percent(accuracy = 1)) 
+
+```
+
+
+
+הדגמה של חשיבות ההשוואה לפי גיל
