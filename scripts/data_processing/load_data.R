@@ -16,7 +16,7 @@ var_names <- c("age", "arab_female", "arab_male", "arab_total",
                "jews_and_others_female","jews_and_others_male", "jews_and_others_total", 
                "all_female","all_male", "all_total", "drop") 
 
-files_list <- list.files("originals/Israel population by group gender and age", full.names = TRUE)
+files_list <- list.files("originals/Israel_population_by_group_gender_and_age", full.names = TRUE)
 names(files_list) <- as.character(c(2000:2020))
 
 
@@ -31,16 +31,16 @@ population_2000_2020   <-   map_dfr(files_list, read_excel,sheet = 1, col_names 
                 select (year,population_group, age, number) %>%
                 arrange(year,population_group, age)
 
-# write.xlsx(population_2000_2020, "data products/population_2000_2020.xlsx",asTable = T)
-# write_csv(population_2000_2020, "data products/population_2000_2020.csv")
+# write.xlsx(population_2000_2020, "data_products/population_2000_2020.xlsx",asTable = T)
+# write_csv(population_2000_2020, "data_products/population_2000_2020.csv")
 
 
 
 
 #2 load OECD data
 
-files_list <- setNames(c("originals/OECD population/HIST_POP_18062021.csv",
-                         "originals/OECD population/POP_PROJ_18062021.csv"),
+files_list <- setNames(c("originals/OECD_population/HIST_POP_18062021.csv",
+                         "originals/OECD_population/POP_PROJ_18062021.csv"),
                        c("history","projection"))
 
 OECD_pop <- map_dfr(files_list, read_csv , .id = "data_type") %>%
@@ -55,17 +55,17 @@ OECD_pop <- map_dfr(files_list, read_csv , .id = "data_type") %>%
                       ) %>%
            arrange(country, year, gender, age_group)
 
-# write.xlsx(OECD_pop, "data products/OECD_pop.xlsx",asTable = T)
-# write_csv (OECD_pop, "data products/OECD_pop.csv")
+# write.xlsx(OECD_pop, "data_products/OECD_pop.xlsx",asTable = T)
+# write_csv (OECD_pop, "data_products/OECD_pop.csv")
 # 
 
 #3. import Israel by settlement and geo area data 
 
 setwd("..")
 
-file.copy("local_authorities_in_Israel/data products/age_composition_geo_area_14_20_long.csv", "Israel population/data products")
+file.copy("local_authorities_in_Israel/data_products/age_composition_geo_area_14_20_long.csv", "Israel_population/data_products")
 
-setwd("Israel population")
+setwd("Israel_population")
 
-age_composition_geo_area_14_20_long <- read_csv("data products/age_composition_geo_area_14_20_long.csv") %>%
+age_composition_geo_area_14_20_long <- read_csv("data_products/age_composition_geo_area_14_20_long.csv") %>%
   select(-city_type, -data_type)
